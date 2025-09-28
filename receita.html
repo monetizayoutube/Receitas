@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Receita</title>
+<style>
+body{margin:0;font-family:Arial,sans-serif;display:flex;flex-direction:column;height:100vh;}
+header{background:#ff5722;color:white;padding:15px;text-align:center;font-size:1.5rem;font-weight:bold;display:flex;justify-content:space-between;align-items:center;}
+header button{background:#ffc107;color:black;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;}
+iframe{flex:1;width:100%;border:none;}
+</style>
+</head>
+<body>
+<header>
+  <span id="titulo"></span>
+  <div>
+    <button id="favBtn">☆</button>
+    <button id="compBtn">📤</button>
+  </div>
+</header>
+<iframe id="iframe"></iframe>
+
+<script>
+function getQuery() { return Object.fromEntries(new URLSearchParams(window.location.search)); }
+const q = getQuery();
+document.getElementById('titulo').innerText=q.nome;
+document.getElementById('iframe').src=q.link;
+
+// Favorito
+let favoritos=JSON.parse(localStorage.getItem("favoritos"))||[];
+const favBtn=document.getElementById('favBtn');
+function atualizarFav(){
+  favBtn.innerText=favoritos.some(r=>r.url===q.link)?"★":"☆";
+}
+favBtn.onclick=()=>{
+  const existe=favoritos.find(r=>r.url===q.link);
+  if(existe){ favoritos=favoritos.filter(r=>r.url!==q.link);}
+  else{ favoritos.push({nome:q.nome,url:q.link,img:q.img});}
+  localStorage.setItem("favoritos",JSON.stringify(favoritos));
+  atualizarFav();
+}
+atualizarFav();
+
+// Compartilhar
+document.getElementById('compBtn').onclick=()=>{
+  if(navigator.share){
+    navigator.share({title:q.nome,url:q.link});
+  }else{ alert("Compartilhe manualmente: "+q.link); }
+}
+</script>
+</body>
+</html>
