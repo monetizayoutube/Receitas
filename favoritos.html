@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Favoritos</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#fafafa;display:flex;flex-direction:column;min-height:100vh;padding-bottom:60px;}
+header{background:#ff5722;color:white;padding:15px;text-align:center;font-size:1.5rem;font-weight:bold;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:20px;max-width:1200px;margin:0 auto;}
+.card{background:white;border-radius:16px;box-shadow:0 4px 6px rgba(0,0,0,0.1);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s ease;}
+.card:hover{transform:translateY(-3px);}
+.card img{width:100%;height:180px;object-fit:cover;}
+.card h3{font-size:1.1rem;margin:10px;}
+.card button{background:#ff5722;color:white;border:none;padding:10px;margin:10px;border-radius:8px;cursor:pointer;font-size:1rem;transition:background 0.3s ease;}
+.card button:hover{background:#e64a19;}
+.empty{text-align:center;color:#777;font-style:italic;margin-top:20px;}
+.navbar{position:fixed;bottom:0;left:0;width:100%;background:white;display:flex;justify-content:space-around;border-top:1px solid #ddd;padding:6px 0;}
+.navbar a{text-decoration:none;color:#666;text-align:center;font-size:0.8rem;flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.navbar svg{width:20px;height:20px;stroke:#666;fill:none;}
+.navbar a.active svg{stroke:#ff5722;}
+.navbar a.active{color:#ff5722;font-weight:bold;}
+</style>
+</head>
+<body>
+<header>Favoritos</header>
+<div class="grid" id="favoritosGrid"></div>
+<p class="empty" id="emptyMsg">Nenhum favorito adicionado ainda.</p>
+<nav class="navbar">
+<a href="index.html"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H3V9.5z"/></svg><span>Todas</span></a>
+<a href="favoritos.html" class="active"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Favoritos</span></a>
+<a href="recentes.html"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2m6-2a10 10 0 1 1-4-8"/></svg><span>Recentes</span></a>
+</nav>
+<script>
+async function carregarFavoritos(){
+  const container=document.getElementById('favoritosGrid');
+  const msg=document.getElementById('emptyMsg');
+  const favURLs=JSON.parse(localStorage.getItem('favoritos'))?.map(r=>r.url)||[];
+  if(favURLs.length===0){msg.style.display="block"; return;} msg.style.display="none";
+  const res=await fetch('receitas.json'); const todas=await res.json();
+  container.innerHTML='';
+  const favs=todas.filter(r=>favURLs.includes(r.url));
+  favs.forEach(r=>{
+    const c=document.createElement('div'); c.className='card';
+    c.innerHTML=`<img src="${r.img}" alt="${r.nome}"><h3>${r.nome}</h3><button onclick="abrirReceita('${r.nome}','${r.url}','${r.img}')">Ver Receita</button>`;
+    container.appendChild(c);
+  });
+}
+function abrirReceita(nome,url,img){
+  window.location.href=`receita.html?link=${encodeURIComponent(url)}&nome=${encodeURIComponent(nome)}&img=${encodeURIComponent(img)}`;
+}
+carregarFavoritos();
+</script>
+</body>
+</html>
