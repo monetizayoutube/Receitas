@@ -1,0 +1,17 @@
+[
+  {
+    "nome": "Bolo de Cenoura",
+    "url": "https://www.receiteria.com.br/receita/bolo-de-cenoura/",
+    "img": "https://via.placeholder.com/300x200?text=Bolo+de+Cenoura"
+  },
+  {
+    "nome": "Lasanha de Frango",
+    "url": "https://www.receiteria.com.br/receita/lasanha-de-frango/",
+    "img": "https://via.placeholder.com/300x200?text=Lasanha+de+Frango"
+  },
+  {
+    "nome": "Torta de Limão",
+    "url": "https://www.receiteria.com.br/receita/torta-de-limao/",
+    "img": "https://via.placeholder.com/300x200?text=Torta+de+Limao"
+  }
+]
