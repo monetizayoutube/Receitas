@@ -7,7 +7,18 @@
   <style>
     body { font-family: Arial, sans-serif; margin:0; background:#fafafa; display:flex; flex-direction:column; min-height:100vh; padding-bottom:60px; }
     header { background:#ff5722; color:white; padding:15px; text-align:center; font-size:1.5rem; font-weight:bold; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; padding:20px; max-width:1200px; margin:0 auto; }
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
+      gap:20px;
+      padding:20px;
+      max-width:1200px;
+      margin:0 auto;
+    }
+    /* Força uma coluna no celular */
+    @media (max-width: 500px) {
+      .grid { grid-template-columns: 1fr; }
+    }
     .card { background:white; border-radius:16px; box-shadow:0px 4px 6px rgba(0,0,0,0.1); overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s ease; }
     .card:hover { transform:translateY(-3px); }
     .card img { width:100%; height:180px; object-fit:cover; }
@@ -64,11 +75,10 @@
     }
 
     function abrirReceita(nome, url, img) {
-      // Salva recentes
       let recentes = JSON.parse(localStorage.getItem("recentes")) || [];
-      recentes = recentes.filter(r => r.url !== url); // remove duplicado
+      recentes = recentes.filter(r => r.url !== url);
       recentes.unshift({ nome, url, img });
-      if (recentes.length>10) recentes.pop(); // mantém 10 recentes
+      if (recentes.length > 10) recentes.pop();
       localStorage.setItem("recentes", JSON.stringify(recentes));
 
       window.location.href = `receita.html?link=${encodeURIComponent(url)}&nome=${encodeURIComponent(nome)}&img=${encodeURIComponent(img)}`;
@@ -76,9 +86,12 @@
 
     function toggleFavorito(nome, url, img) {
       let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
-      const jaExiste = favoritos.find(r=>r.url===url);
-      if(jaExiste){ favoritos = favoritos.filter(r=>r.url!==url); }
-      else { favoritos.push({nome,url,img}); }
+      const jaExiste = favoritos.find(r => r.url === url);
+      if (jaExiste) {
+        favoritos = favoritos.filter(r => r.url !== url);
+      } else {
+        favoritos.push({ nome, url, img });
+      }
       localStorage.setItem("favoritos", JSON.stringify(favoritos));
       carregarReceitas();
     }
