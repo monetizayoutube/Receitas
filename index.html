@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receitas</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin:0; background:#fafafa; display:flex; flex-direction:column; min-height:100vh; padding-bottom:60px; }
+    header { background:#ff5722; color:white; padding:15px; text-align:center; font-size:1.5rem; font-weight:bold; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:20px; padding:20px; max-width:1200px; margin:0 auto; }
+    .card { background:white; border-radius:16px; box-shadow:0px 4px 6px rgba(0,0,0,0.1); overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; transition:transform 0.2s ease; }
+    .card:hover { transform:translateY(-3px); }
+    .card img { width:100%; height:180px; object-fit:cover; }
+    .card h3 { font-size:1.1rem; margin:10px; }
+    .card .actions { display:flex; justify-content:space-between; margin:10px; gap:10px; }
+    .card button { flex:1; background:#ff5722; color:white; border:none; padding:10px; border-radius:8px; cursor:pointer; font-size:1rem; transition:background 0.3s ease; }
+    .card button:hover { background:#e64a19; }
+    .fav { background:#ffc107; color:black; }
+    .navbar { position:fixed; bottom:0; left:0; width:100%; background:white; display:flex; justify-content:space-around; border-top:1px solid #ddd; padding:6px 0; }
+    .navbar a { text-decoration:none; color:#666; text-align:center; font-size:0.8rem; flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
+    .navbar svg { width:20px; height:20px; stroke:#666; fill:none; }
+    .navbar a.active svg { stroke:#ff5722; }
+    .navbar a.active { color:#ff5722; font-weight:bold; }
+  </style>
+</head>
+<body>
+  <header>Minhas Receitas</header>
+  <div class="grid" id="receitasGrid"></div>
+
+  <nav class="navbar">
+    <a href="index.html" class="active"><svg viewBox="0 0 24 24"><path d="M3 9.5L12 3l9 6.5V21H3V9.5z"/></svg><span>Todas</span></a>
+    <a href="favoritos.html"><svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg><span>Favoritos</span></a>
+    <a href="recentes.html"><svg viewBox="0 0 24 24"><path d="M12 6v6l4 2m6-2a10 10 0 1 1-4-8"/></svg><span>Recentes</span></a>
+  </nav>
+
+  <script>
+    async function carregarReceitas() {
+      try {
+        const response = await fetch('receitas.json');
+        const receitas = await response.json();
+        renderReceitas(receitas);
+      } catch (err) { console.error("Erro ao carregar receitas:", err); }
+    }
+
+    function renderReceitas(receitas) {
+      const container = document.getElementById("receitasGrid");
+      const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+      container.innerHTML = "";
+
+      receitas.forEach(r => {
+        const card = document.createElement("div");
+        const isFav = favoritos.some(f => f.url === r.url);
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${r.img}" alt="${r.nome}">
+          <h3>${r.nome}</h3>
+          <div class="actions">
+            <button onclick="abrirReceita('${r.nome}','${r.url}','${r.img}')">Ver Receita</button>
+            <button class="fav" onclick="toggleFavorito('${r.nome}','${r.url}','${r.img}')">${isFav?"★":"☆"}</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function abrirReceita(nome, url, img) {
+      // Salva recentes
+      let recentes = JSON.parse(localStorage.getItem("recentes")) || [];
+      recentes = recentes.filter(r => r.url !== url); // remove duplicado
+      recentes.unshift({ nome, url, img });
+      if (recentes.length>10) recentes.pop(); // mantém 10 recentes
+      localStorage.setItem("recentes", JSON.stringify(recentes));
+
+      window.location.href = `receita.html?link=${encodeURIComponent(url)}&nome=${encodeURIComponent(nome)}&img=${encodeURIComponent(img)}`;
+    }
+
+    function toggleFavorito(nome, url, img) {
+      let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+      const jaExiste = favoritos.find(r=>r.url===url);
+      if(jaExiste){ favoritos = favoritos.filter(r=>r.url!==url); }
+      else { favoritos.push({nome,url,img}); }
+      localStorage.setItem("favoritos", JSON.stringify(favoritos));
+      carregarReceitas();
+    }
+
+    carregarReceitas();
+  </script>
+</body>
+</html>
