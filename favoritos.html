@@ -21,6 +21,20 @@ header{background:#ff5722;color:white;padding:15px;text-align:center;font-size:1
 .navbar a.active svg{stroke:#ff5722;}
 .navbar a.active{color:#ff5722;font-weight:bold;}
 </style>
+  <style>
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+  padding:20px;
+  max-width:1200px;
+  margin:0 auto;
+}
+@media (max-width: 500px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+
 </head>
 <body>
 <header>Favoritos</header>
