@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       margin: 0;
       background: #fafafa;
-      padding-top: 65px; /* empurra o conteúdo para baixo do header */
+      padding-top: 65px; /* evita sobreposição com o header fixo */
       padding-bottom: 60px;
     }
     header {
@@ -55,29 +55,26 @@
       border-radius: 16px;
       box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
       overflow: hidden;
-      position: relative;
+      display: flex;
+      flex-direction: column;
     }
     .card img {
       width: 100%;
       height: 180px;
       object-fit: cover;
     }
-    .card h3 { font-size: 1.1rem; margin: 10px; }
+    .card h3 { font-size: 1.1rem; margin: 10px; flex-grow: 1; }
     .remove-btn {
-      position: absolute;
-      top: 6px;
-      right: 6px;
       background: rgba(255,87,34,0.9);
       border: none;
       color: white;
       font-weight: bold;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 12px;
-      line-height: 16px;
-      text-align: center;
+      border-radius: 6px;
+      width: 100%;
+      padding: 5px;
+      font-size: 0.9rem;
       cursor: pointer;
+      margin: 0 10px 5px 10px;
       transition: background 0.2s;
     }
     .remove-btn:hover { background: #ff3d00; }
@@ -86,7 +83,7 @@
       color: white;
       border: none;
       padding: 10px;
-      margin: 10px;
+      margin: 0 10px 10px 10px;
       border-radius: 8px;
       cursor: pointer;
       width: calc(100% - 20px);
@@ -107,32 +104,32 @@
       const container = document.getElementById("favGrid");
       container.innerHTML = "";
 
-      if(favoritos.length === 0){
+      if (favoritos.length === 0) {
         container.innerHTML = "<p style='text-align:center;color:#555;'>Nenhum favorito ainda.</p>";
         return;
       }
 
-      favoritos.forEach((r)=>{
+      favoritos.forEach((r) => {
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `
-          <button class="remove-btn" onclick="removerFavorito('${r.url}')">×</button>
           <img src="${r.img}" alt="${r.nome}">
           <h3>${r.nome}</h3>
+          <button class="remove-btn" onclick="removerFavorito('${r.url}')">Remover</button>
           <button onclick="abrirReceita('${r.nome}','${r.url}','${r.img}')">Ver Receita</button>
         `;
         container.appendChild(card);
       });
     }
 
-    function removerFavorito(url){
+    function removerFavorito(url) {
       let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
       favoritos = favoritos.filter(r => r.url !== url);
       localStorage.setItem("favoritos", JSON.stringify(favoritos));
       carregarFavoritos();
     }
 
-    function abrirReceita(nome, url, img){
+    function abrirReceita(nome, url, img) {
       window.location.href = `receita.html?link=${encodeURIComponent(url)}&nome=${encodeURIComponent(nome)}&img=${encodeURIComponent(img)}`;
     }
 
