@@ -7,6 +7,23 @@
   <style>
     body { font-family: Arial, sans-serif; margin:0; background:#fafafa; display:flex; flex-direction:column; min-height:100vh; padding-bottom:60px; }
     header { background:#ff5722; color:white; padding:15px; text-align:center; font-size:1.5rem; font-weight:bold; }
+
+    /* Área de publicidade */
+    .ads {
+      background:#fff;
+      padding:10px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      border-bottom:1px solid #ddd;
+    }
+    .ads img {
+      max-width:100%;
+      height:auto;
+      border-radius:8px;
+      box-shadow:0 2px 4px rgba(0,0,0,0.1);
+    }
+
     .grid {
       display:grid;
       grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
@@ -15,7 +32,6 @@
       max-width:1200px;
       margin:0 auto;
     }
-    /* Força uma coluna no celular */
     @media (max-width: 500px) {
       .grid { grid-template-columns: 1fr; }
     }
@@ -36,6 +52,14 @@
 </head>
 <body>
   <header>Minhas Receitas</header>
+
+  <!-- Área de Publicidade -->
+  <div class="ads">
+    <a href="https://seu-anunciante.com" target="_blank">
+      <img src="https://monetizayoutube.github.io/Receitas/img/appreceitas.webp" alt="Publicidade">
+    </a>
+  </div>
+
   <div class="grid" id="receitasGrid"></div>
 
   <nav class="navbar">
